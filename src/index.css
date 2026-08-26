@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --color-ocean: #0a2744;
+  --color-ocean-dark: #061a2e;
+  --color-coral: #e85d4c;
+  --color-coral-dark: #c94a3b;
+  --color-mist: #d6e6f0;
+  --color-sky: #eef4f8;
+  --color-ink: #142033;
+  --color-muted: #5a6b7d;
+  --color-amber: #d97706;
+  --color-line: #c5d4e0;
+  --color-navy: #0a2744;
+  --color-navy-dark: #061a2e;
+  --color-teal: #e85d4c;
+  --color-teal-dark: #c94a3b;
+  --color-sage: #d6e6f0;
+  --color-sand: #eef4f8;
+  --color-gold: #d97706;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-sky);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+@media (min-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 3px solid #e85d4c;
+  outline-offset: 2px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.55s ease-out both;
+}
+
+.animate-fade-up-delay {
+  animation: fade-up 0.55s ease-out 0.12s both;
+}
+
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-progress {
+  transform-origin: left;
+  animation: progress-fill 0.45s ease-out both;
+}
+
+@keyframes progress-glow {
+  0% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.25);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.animate-progress-glow {
+  animation: progress-glow 0.55s ease-out;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-in {
+  animation: page-in 0.4s ease-out both;
+}
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdown 0.18s ease-out both;
+}
+
+@keyframes step-advance {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-step-advance {
+  animation: step-advance 0.32s ease-in forwards;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-pop {
+  display: inline-block;
+  animation: pop 0.45s ease-out;
+}
