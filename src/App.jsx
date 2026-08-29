@@ -19,6 +19,7 @@ import Dashboard from './pages/agent/Dashboard'
 import CaseDetail from './pages/agent/CaseDetail'
 import Privacy from './pages/Privacy'
 
+
 export default function App() {
   return (
     <ToastProvider>
