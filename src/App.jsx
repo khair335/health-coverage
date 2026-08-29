@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AssessmentProvider } from './context/AssessmentContext'
+import { ToastProvider } from './components/Toast'
 import { Layout } from './components/Layout'
 import Landing from './pages/Landing'
 import Location from './pages/Location'
@@ -20,32 +21,34 @@ import Privacy from './pages/Privacy'
 
 export default function App() {
   return (
-    <AssessmentProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Landing />} />
-            <Route path="/location" element={<Location />} />
-            <Route path="/household" element={<Household />} />
-            <Route path="/income" element={<Income />} />
-            <Route path="/eligibility-questions" element={<EligibilityQuestions />} />
-            <Route path="/preferences" element={<Preferences />} />
-            <Route path="/care" element={<Care />} />
-            <Route path="/paths" element={<Paths />} />
-            <Route path="/plans" element={<Plans />} />
-            <Route path="/recommendation" element={<Recommendation />} />
-            <Route path="/assistance" element={<Assistance />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/confirmation" element={<Confirmation />} />
-            <Route path="/privacy" element={<Privacy />} />
-          </Route>
-          <Route element={<Layout agent />}>
-            <Route path="/agent" element={<Dashboard />} />
-            <Route path="/agent/cases/:id" element={<CaseDetail />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AssessmentProvider>
+    <ToastProvider>
+      <AssessmentProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Landing />} />
+              <Route path="/location" element={<Location />} />
+              <Route path="/household" element={<Household />} />
+              <Route path="/income" element={<Income />} />
+              <Route path="/eligibility-questions" element={<EligibilityQuestions />} />
+              <Route path="/preferences" element={<Preferences />} />
+              <Route path="/care" element={<Care />} />
+              <Route path="/paths" element={<Paths />} />
+              <Route path="/plans" element={<Plans />} />
+              <Route path="/recommendation" element={<Recommendation />} />
+              <Route path="/assistance" element={<Assistance />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="/privacy" element={<Privacy />} />
+            </Route>
+            <Route element={<Layout agent />}>
+              <Route path="/agent" element={<Dashboard />} />
+              <Route path="/agent/cases/:id" element={<CaseDetail />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AssessmentProvider>
+    </ToastProvider>
   )
 }

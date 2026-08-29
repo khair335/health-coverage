@@ -1,25 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Fraunces', Georgia, serif;
-  --color-ocean: #0a2744;
-  --color-ocean-dark: #061a2e;
-  --color-coral: #e85d4c;
-  --color-coral-dark: #c94a3b;
-  --color-mist: #d6e6f0;
-  --color-sky: #eef4f8;
-  --color-ink: #142033;
-  --color-muted: #5a6b7d;
-  --color-amber: #d97706;
-  --color-line: #c5d4e0;
-  --color-navy: #0a2744;
-  --color-navy-dark: #061a2e;
-  --color-teal: #e85d4c;
-  --color-teal-dark: #c94a3b;
-  --color-sage: #d6e6f0;
-  --color-sand: #eef4f8;
-  --color-gold: #d97706;
+  /* Primary font — Plus Jakarta Sans replaces DM Sans + Fraunces */
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* ── New Indigo / Violet / Green design system ── */
+  --color-primary:      #4338ca;   /* Deep Indigo — buttons, active */
+  --color-primary-dark: #3730a3;   /* Indigo hover */
+  --color-primary-light:#6366f1;   /* Indigo light — borders, rings */
+
+  --color-accent:       #16a34a;   /* Electric Green — progress bar */
+  --color-accent-bright:#22c55e;   /* Bright Green — badges, highlights */
+
+  /* Hero gradient stops */
+  --color-hero-from:    #1e1147;
+  --color-hero-mid:     #2d1f6e;
+  --color-hero-to:      #312e81;
+
+  /* Surfaces */
+  --color-surface:      #f8faff;   /* Page background */
+  --color-card:         #ffffff;   /* Cards */
+
+  /* Text */
+  --color-ink:          #0f172a;   /* Charcoal body text */
+  --color-muted:        #64748b;   /* Slate subtext */
+
+  /* Lines / borders */
+  --color-line:         #e2e8f0;
+
+  /* Indigo tints for chips / badges */
+  --color-mist:         #e0e7ff;   /* Indigo 100 */
+  --color-sky:          #f8faff;   /* Same as surface */
+
+  /* Keep legacy aliases so existing Tailwind classes still resolve */
+  --color-ocean:        #4338ca;
+  --color-ocean-dark:   #3730a3;
+  --color-coral:        #4338ca;
+  --color-coral-dark:   #3730a3;
+  --color-amber:        #d97706;
+  --color-navy:         #1e1147;
+  --color-navy-dark:    #12082e;
+  --color-teal:         #4338ca;
+  --color-teal-dark:    #3730a3;
+  --color-sage:         #e0e7ff;
+  --color-sand:         #f8faff;
+  --color-gold:         #d97706;
 }
 
 html {
@@ -28,10 +55,12 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-sky);
+  background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @media (min-width: 640px) {
@@ -45,7 +74,7 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid #e85d4c;
+  outline: 3px solid #4338ca;
   outline-offset: 2px;
 }
 
@@ -153,7 +182,43 @@ body {
   }
 }
 
-.animate-pop {
-  display: inline-block;
-  animation: pop 0.45s ease-out;
+@keyframes continuous-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes progress-stripe {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 0;
+  }
+}
+
+.animate-shimmer-bar {
+  background-size: 200% 200%;
+  animation: continuous-shimmer 3s ease infinite;
+}
+
+.animate-stripe-bar {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 40px 40px;
+  animation: progress-stripe 1.2s linear infinite;
 }

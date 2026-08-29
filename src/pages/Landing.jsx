@@ -86,66 +86,90 @@ export default function Landing() {
 
   return (
     <div className="pb-12 sm:pb-16">
-      <section className="relative min-h-[78vh] overflow-hidden bg-ocean text-white sm:min-h-[85vh]">
+      {/* ── Hero ── */}
+      <section className="relative min-h-[78vh] overflow-hidden sm:min-h-[85vh]" style={{background: 'linear-gradient(135deg, #1e1147 0%, #2d1f6e 45%, #312e81 100%)'}}>
+        {/* Animated mesh gradient blobs */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-40"
+          className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              'radial-gradient(ellipse 80% 60% at 70% 20%, rgba(232,93,76,0.35), transparent 55%), radial-gradient(ellipse 50% 40% at 10% 80%, rgba(214,230,240,0.2), transparent 50%)',
+              'radial-gradient(ellipse 70% 55% at 80% 15%, rgba(139,92,246,0.4), transparent 55%), radial-gradient(ellipse 55% 45% at 15% 85%, rgba(99,102,241,0.3), transparent 50%), radial-gradient(ellipse 40% 35% at 60% 70%, rgba(34,197,94,0.12), transparent 45%)',
+          }}
+        />
+        {/* Subtle grid lines */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
           }}
         />
         <div className="relative mx-auto flex max-w-6xl flex-col justify-center px-4 py-14 sm:py-20 md:min-h-[85vh] md:py-28">
-          <p className="animate-fade-up font-serif text-[1.75rem] font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+          {/* Brand pill */}
+          <div className="animate-fade-up mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 backdrop-blur-sm">
+            <span className="h-2 w-2 rounded-full bg-[#22c55e]"></span>
+            <span className="text-xs font-semibold text-white/90 tracking-wide">New Jersey · Live now</span>
+          </div>
+          <p className="animate-fade-up text-[2rem] font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
             Health Coverage Navigator
           </p>
-          <h1 className="animate-fade-up-delay mt-4 max-w-2xl font-serif text-lg font-medium leading-snug text-mist sm:mt-6 sm:text-3xl lg:text-4xl">
+          <h1 className="animate-fade-up-delay mt-4 max-w-2xl text-lg font-medium leading-snug text-indigo-200 sm:mt-6 sm:text-3xl lg:text-4xl">
             Clearer coverage choices for your household — not a sales script
           </h1>
-          <p className="animate-fade-up-delay mt-3 max-w-xl text-sm leading-relaxed text-mist/90 sm:mt-5 sm:text-lg">
-            Answer a few plain questions. We’ll narrow your options and connect you with a licensed
+          <p className="animate-fade-up-delay mt-3 max-w-xl text-sm leading-relaxed text-indigo-300 sm:mt-5 sm:text-lg">
+            Answer a few plain questions. We'll narrow your options and connect you with a licensed
             producer.
           </p>
           <div className="animate-fade-up-delay mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
-            <Button to="/location" className="sm:min-w-48">
+            <Button to="/location" className="sm:min-w-48 !bg-white !text-[#4338ca] hover:!bg-indigo-50 !shadow-lg">
               Start assessment
             </Button>
             <a
               href="#start"
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/25 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/10 sm:min-h-12 sm:px-5 sm:py-3 sm:text-base"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/25 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/10 sm:min-h-12 sm:px-5 sm:py-3 sm:text-base transition-colors duration-200"
             >
               Choose your state
             </a>
           </div>
+          {/* Trust indicators */}
+          <div className="animate-fade-up-delay mt-8 flex flex-wrap gap-4 sm:mt-10">
+            {['No SSN required', 'Free to use', 'Licensed producers'].map((t) => (
+              <span key={t} className="flex items-center gap-1.5 text-xs text-indigo-300">
+                <span className="text-[#22c55e] text-base">✓</span> {t}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="start" className="scroll-mt-20 bg-sky sm:scroll-mt-24">
+      {/* ── Start / State chooser ── */}
+      <section id="start" className="scroll-mt-20 bg-white sm:scroll-mt-24">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:gap-10 sm:py-16 md:grid-cols-2 md:items-center">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">
               New Jersey first
             </p>
-            <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl md:text-4xl">
+            <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl md:text-4xl">
               Start your coverage review
             </h2>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted sm:mt-3 sm:text-base">
-              About 8–10 minutes. You can say “I’m not sure” at any step. Sales help is live for New
+              About 8–10 minutes. You can say "I'm not sure" at any step. Sales help is live for New
               Jersey; other states can leave interest.
             </p>
             <ul className="mt-4 space-y-2 text-sm text-muted">
               <li className="flex gap-2">
-                <span className="font-semibold text-coral">•</span> No SSN in the public questionnaire
+                <span className="font-bold text-[#16a34a]">✓</span> No SSN in the public questionnaire
               </li>
               <li className="flex gap-2">
-                <span className="font-semibold text-coral">•</span> Progress saved in this browser
+                <span className="font-bold text-[#16a34a]">✓</span> Progress saved in this browser
               </li>
               <li className="flex gap-2">
-                <span className="font-semibold text-coral">•</span> Producer contact only if you ask
+                <span className="font-bold text-[#16a34a]">✓</span> Producer contact only if you ask
               </li>
             </ul>
           </div>
-          <div className="rounded-2xl border border-line bg-white p-5 shadow-sm sm:rounded-3xl sm:p-8">
-            <p className="mb-1.5 text-xs font-semibold text-ocean sm:text-sm">Where do you live?</p>
+          <div className="rounded-2xl border border-line bg-white p-5 shadow-lg sm:rounded-3xl sm:p-8">
+            <p className="mb-1.5 text-xs font-bold text-[#0f172a] sm:text-sm">Where do you live?</p>
             <Select
               value={data.state}
               onChange={(e) => update({ state: e.target.value, zip: '', county: '' })}
@@ -159,7 +183,7 @@ export default function Landing() {
             </Button>
             <p className="mt-3 text-[11px] leading-relaxed text-muted sm:mt-4 sm:text-xs">
               Answers are used for screening and, if you ask, to contact a licensed producer.{' '}
-              <Link to="/privacy" className="font-semibold text-coral hover:underline">
+              <Link to="/privacy" className="font-semibold text-[#4338ca] hover:underline">
                 Privacy
               </Link>
             </p>
@@ -167,32 +191,34 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── How it works ── */}
       <section id="how-it-works" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:scroll-mt-24 sm:py-16">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">How it works</p>
-        <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl md:text-4xl">Three steps. No dead ends.</h2>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">How it works</p>
+        <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl md:text-4xl">Three steps. No dead ends.</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted sm:mt-3 sm:text-base">
           The platform screens and explains. A licensed producer verifies and completes any sale or
           public-program handoff through official channels.
         </p>
         <ol className="mt-6 grid gap-3 sm:mt-10 sm:gap-5 md:grid-cols-3">
           {steps.map((s) => (
-            <li key={s.n} className="rounded-2xl border border-line bg-white p-4 shadow-sm sm:p-6">
-              <span className="font-serif text-2xl text-coral sm:text-3xl">{s.n}</span>
-              <h3 className="mt-2 text-base font-semibold text-ocean sm:mt-3 sm:text-xl">{s.title}</h3>
+            <li key={s.n} className="rounded-2xl border border-line bg-white p-4 shadow-md hover:shadow-lg transition-shadow duration-200 sm:p-6">
+              <span className="text-2xl font-extrabold text-[#6366f1] sm:text-3xl">{s.n}</span>
+              <h3 className="mt-2 text-base font-bold text-[#0f172a] sm:mt-3 sm:text-xl">{s.title}</h3>
               <p className="mt-1.5 text-xs leading-relaxed text-muted sm:mt-2 sm:text-sm">{s.body}</p>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className="bg-white">
+      {/* ── Trust ── */}
+      <section className="bg-[#f8faff]">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">Why people trust it</p>
-          <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl">Guidance built for real households</h2>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">Why people trust it</p>
+          <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl">Guidance built for real households</h2>
           <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-3">
             {trustPoints.map((t) => (
               <Card key={t.title}>
-                <h3 className="text-base font-semibold text-ocean sm:text-lg">{t.title}</h3>
+                <h3 className="text-base font-bold text-[#0f172a] sm:text-lg">{t.title}</h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-muted sm:mt-2 sm:text-sm">{t.body}</p>
               </Card>
             ))}
@@ -200,29 +226,31 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Who this helps ── */}
       <section id="who" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:scroll-mt-24 sm:py-16">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">Who this helps</p>
-        <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">Who this helps</p>
+        <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl">
           Built for people the system often leaves confused
         </h2>
         <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-3">
           {audiences.map((a) => (
             <Card key={a.title}>
-              <h3 className="text-base font-semibold text-ocean sm:text-lg">{a.title}</h3>
+              <h3 className="text-base font-bold text-[#0f172a] sm:text-lg">{a.title}</h3>
               <p className="mt-1.5 text-xs leading-relaxed text-muted sm:mt-2 sm:text-sm">{a.body}</p>
             </Card>
           ))}
         </div>
       </section>
 
-      <section className="bg-sky/70">
+      {/* ── Promises ── */}
+      <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
           <div className="grid gap-8 md:grid-cols-2 md:items-start md:gap-10">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">
                 What we will not do
               </p>
-              <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl">Honest screening, not a hard sell</h2>
+              <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl">Honest screening, not a hard sell</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted sm:mt-3 sm:text-base">
                 If public coverage or a community clinic is the better next step, we show that even when
                 there is no commission. Rankings never use producer pay as an input.
@@ -230,8 +258,8 @@ export default function Landing() {
             </div>
             <ul className="grid gap-3 sm:grid-cols-2">
               {promises.map(([t, d]) => (
-                <li key={t} className="rounded-2xl border border-line bg-white p-3.5 sm:p-4">
-                  <p className="text-sm font-semibold text-ocean">{t}</p>
+                <li key={t} className="rounded-2xl border border-line bg-[#f8faff] p-3.5 shadow-sm hover:shadow-md transition-shadow duration-200 sm:p-4">
+                  <p className="text-sm font-bold text-[#0f172a]">{t}</p>
                   <p className="mt-1 text-xs leading-relaxed text-muted sm:text-sm">{d}</p>
                 </li>
               ))}
@@ -240,19 +268,20 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
       <section id="faq" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10 sm:scroll-mt-24 sm:py-16">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-sm">FAQ</p>
-        <h2 className="mt-2 font-serif text-2xl text-ocean sm:text-3xl">Common questions</h2>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366f1] sm:text-sm">FAQ</p>
+        <h2 className="mt-2 text-2xl font-extrabold text-[#0f172a] sm:text-3xl">Common questions</h2>
         <div className="mt-6 space-y-3 sm:mt-8">
           {faqs.map((item) => (
             <details
               key={item.q}
-              className="group rounded-2xl border border-line bg-white px-4 py-3 open:shadow-sm sm:px-5 sm:py-4"
+              className="group rounded-2xl border border-line bg-white px-4 py-3 open:shadow-md transition-shadow duration-200 sm:px-5 sm:py-4"
             >
-              <summary className="cursor-pointer list-none text-sm font-semibold text-ocean marker:content-none sm:text-base [&::-webkit-details-marker]:hidden">
+              <summary className="cursor-pointer list-none text-sm font-bold text-[#0f172a] marker:content-none sm:text-base [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-3">
                   {item.q}
-                  <span className="text-coral transition group-open:rotate-45">+</span>
+                  <span className="text-[#6366f1] transition group-open:rotate-45">+</span>
                 </span>
               </summary>
               <p className="mt-2 text-xs leading-relaxed text-muted sm:text-sm">{item.a}</p>
@@ -261,16 +290,17 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Final CTA ── */}
       <section className="mx-auto max-w-6xl px-4">
-        <div className="rounded-2xl bg-ocean px-5 py-8 text-white sm:rounded-3xl sm:px-10 sm:py-10 md:flex md:items-center md:justify-between md:gap-8">
+        <div className="rounded-2xl px-5 py-8 text-white sm:rounded-3xl sm:px-10 sm:py-10 md:flex md:items-center md:justify-between md:gap-8" style={{background: 'linear-gradient(135deg, #1e1147 0%, #312e81 100%)'}}>
           <div>
-            <h2 className="font-serif text-2xl sm:text-3xl">Ready when you are</h2>
-            <p className="mt-2 max-w-lg text-sm text-mist sm:text-base">
-              Start with your ZIP code. We’ll save your progress in this browser so you can finish the
+            <h2 className="text-2xl font-extrabold sm:text-3xl">Ready when you are</h2>
+            <p className="mt-2 max-w-lg text-sm text-indigo-200 sm:text-base">
+              Start with your ZIP code. We'll save your progress in this browser so you can finish the
               review in one sitting.
             </p>
           </div>
-          <Button to="/location" className="mt-5 shrink-0 sm:mt-6 md:mt-0">
+          <Button to="/location" className="mt-5 shrink-0 !bg-white !text-[#4338ca] hover:!bg-indigo-50 !shadow-lg sm:mt-6 md:mt-0">
             Start assessment
           </Button>
         </div>

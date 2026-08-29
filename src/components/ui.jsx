@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 
 export function Button({ to, children, variant = 'primary', className = '', type = 'button', ...props }) {
   const styles = {
-    primary: 'bg-coral text-white hover:bg-coral-dark shadow-sm',
-    secondary: 'bg-white text-ocean border border-line hover:bg-mist/60',
-    ghost: 'bg-transparent text-coral hover:underline px-0',
+    primary: 'bg-[#4338ca] text-white hover:bg-[#3730a3] shadow-sm active:scale-[0.98]',
+    secondary: 'bg-white text-[#4338ca] border border-[#4338ca]/30 hover:bg-indigo-50',
+    ghost: 'bg-transparent text-[#4338ca] hover:underline px-0',
     gold: 'bg-amber text-white hover:bg-amber/90',
   }[variant]
 
@@ -28,7 +28,7 @@ export function Button({ to, children, variant = 'primary', className = '', type
 
 export function Card({ children, className = '' }) {
   return (
-    <div className={`rounded-2xl border border-line bg-white p-4 shadow-sm sm:p-5 ${className}`}>{children}</div>
+    <div className={`rounded-2xl border border-line bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg sm:p-5 ${className}`}>{children}</div>
   )
 }
 
@@ -36,7 +36,7 @@ export function Field({ label, hint, children, htmlFor }) {
   return (
     <div className="block">
       {label && (
-        <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-semibold text-ocean sm:text-sm">
+        <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-semibold text-[#0f172a] sm:text-sm">
           {label}
         </label>
       )}
@@ -50,7 +50,7 @@ export function TextInput(props) {
   return (
     <input
       {...props}
-      className={`min-h-11 w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/70 sm:min-h-12 sm:px-4 sm:py-3 sm:text-base ${props.className || ''}`}
+      className={`min-h-11 w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted/60 transition-colors duration-150 focus:border-[#4338ca] focus:ring-2 focus:ring-[#4338ca]/15 sm:min-h-12 sm:px-4 sm:py-3 sm:text-base ${props.className || ''}`}
     />
   )
 }
@@ -112,7 +112,7 @@ export function Select({ children, options, value, onChange, className = '', id,
         aria-controls={listId}
         onClick={() => !disabled && setOpen((v) => !v)}
         className={`flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-white px-3.5 py-2.5 text-left text-sm transition sm:min-h-12 sm:px-4 sm:py-3 sm:text-base ${
-          open ? 'border-ocean ring-2 ring-ocean/15' : 'border-line hover:border-ocean/40'
+          open ? 'border-[#4338ca] ring-2 ring-[#4338ca]/15' : 'border-line hover:border-[#4338ca]/40'
         } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         <span className={selected ? 'text-ink' : 'text-muted'}>{selected?.label || placeholder}</span>
@@ -145,7 +145,7 @@ export function Select({ children, options, value, onChange, className = '', id,
                   disabled={opt.disabled}
                   onClick={() => pick(opt.value)}
                   className={`flex w-full items-center px-3.5 py-2.5 text-left text-sm sm:px-4 sm:text-base ${
-                    active ? 'bg-mist font-semibold text-ocean' : 'text-ink hover:bg-sky'
+                    active ? 'bg-indigo-50 font-semibold text-[#4338ca]' : 'text-ink hover:bg-[#f8faff]'
                   } ${opt.disabled ? 'opacity-40' : ''}`}
                 >
                   {opt.label}
@@ -164,10 +164,10 @@ export function Choice({ selected, children, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-11 w-full rounded-xl border px-3.5 py-3 text-left text-sm transition sm:min-h-12 sm:px-4 sm:py-3.5 sm:text-base ${
+      className={`min-h-11 w-full rounded-xl border px-3.5 py-3 text-left text-sm transition duration-150 sm:min-h-12 sm:px-4 sm:py-3.5 sm:text-base ${
         selected
-          ? 'border-ocean bg-mist font-semibold text-ocean'
-          : 'border-line bg-white hover:border-ocean/40'
+          ? 'border-[#4338ca] bg-indigo-50 font-semibold text-[#4338ca]'
+          : 'border-line bg-white hover:border-[#4338ca]/40 hover:bg-indigo-50/30'
       }`}
     >
       {children}
@@ -177,7 +177,7 @@ export function Choice({ selected, children, onClick }) {
 
 export function Notice({ children, tone = 'info' }) {
   const map = {
-    info: 'bg-mist text-ocean border-line',
+    info: 'bg-indigo-50 text-[#4338ca] border-indigo-200',
     warn: 'bg-amber-50 text-amber-950 border-amber-200',
     alert: 'bg-red-50 text-red-900 border-red-200',
   }
@@ -192,9 +192,9 @@ export function PageTitle({ kicker, title, subtitle }) {
   return (
     <header className="mb-5 sm:mb-6">
       {kicker && (
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-coral sm:text-xs">{kicker}</p>
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#6366f1] sm:text-xs">{kicker}</p>
       )}
-      <h1 className="font-serif text-2xl font-semibold text-ocean sm:text-3xl md:text-4xl">{title}</h1>
+      <h1 className="text-2xl font-extrabold text-[#0f172a] sm:text-3xl md:text-4xl">{title}</h1>
       {subtitle && (
         <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted sm:mt-2 sm:text-base">{subtitle}</p>
       )}
@@ -204,10 +204,10 @@ export function PageTitle({ kicker, title, subtitle }) {
 
 export function Badge({ children, tone = 'ocean' }) {
   const map = {
-    ocean: 'bg-mist text-ocean',
-    teal: 'bg-mist text-ocean',
+    ocean: 'bg-indigo-100 text-[#4338ca]',
+    teal: 'bg-indigo-100 text-[#4338ca]',
     gold: 'bg-amber-100 text-amber-900',
-    coral: 'bg-coral/15 text-coral-dark',
+    coral: 'bg-indigo-100 text-[#4338ca]',
     gray: 'bg-slate-100 text-slate-700',
   }
   return (
