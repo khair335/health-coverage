@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom'
-import { Choice, Notice, PageTitle } from '../components/ui'
-import { StepProgress, NavRow } from '../components/StepProgress'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Choice, Notice } from '../components/ui'
+import { AssessmentShell } from '../components/FourStepProgress'
+import { NavRow } from '../components/StepProgress'
 import { useAssessment } from '../context/AssessmentContext'
 import { useToast } from '../components/Toast'
 
@@ -9,6 +10,7 @@ const q = (label, key, options) => ({ label, key, options })
 export default function EligibilityQuestions() {
   const { data, update } = useAssessment()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const toast = useToast()
 
   const questions = [
@@ -33,21 +35,17 @@ export default function EligibilityQuestions() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <StepProgress current="/eligibility-questions" />
+    <AssessmentShell
+      step={1}
+      pathname={pathname}
+      title="A Few More Screening Facts"
+      subtitle="We only ask what public health programs require for screening. 'Not sure' is always a valid choice."
+    >
+      <Notice tone="info">
+        Privacy guarantee: We do not store or transmit Social Security Numbers or medical records.
+      </Notice>
 
-      <div className="rounded-3xl border border-indigo-100 bg-white p-6 sm:p-8 shadow-xl shadow-indigo-500/5">
-        <PageTitle
-          kicker="Step 4 · Program Qualifications"
-          title="A Few More Screening Facts"
-          subtitle="We only ask what public health programs require for screening. 'Not sure' is always a valid choice."
-        />
-
-        <Notice tone="info">
-          Privacy guarantee: We do not store or transmit Social Security Numbers or medical records.
-        </Notice>
-
-        <div className="mt-6 space-y-6">
+      <div className="mt-6 space-y-6">
           {questions.map((item) => (
             <fieldset key={item.key} className="rounded-2xl border border-slate-200/80 bg-slate-50/40 p-4">
               <legend className="px-2 text-xs font-bold uppercase tracking-wider text-indigo-700">
@@ -79,10 +77,9 @@ export default function EligibilityQuestions() {
             />
             <span>I am unsure about several factors — please mark screening results as estimates.</span>
           </label>
-        </div>
-
-        <NavRow back="/income" onNext={handleNext} nextLabel="Continue to Coverage Needs" />
       </div>
-    </div>
+
+      <NavRow back="/income" onNext={handleNext} nextLabel="Continue to Coverage Needs →" />
+    </AssessmentShell>
   )
 }

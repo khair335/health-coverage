@@ -55,20 +55,15 @@ const sample = {
 
 const pages = [
   { file: '01-home.png', path: '/', full: true },
-  { file: '02-location.png', path: '/location' },
-  { file: '03-household.png', path: '/household' },
-  { file: '04-income.png', path: '/income' },
-  { file: '05-eligibility.png', path: '/eligibility-questions' },
-  { file: '06-preferences.png', path: '/preferences' },
-  { file: '07-care.png', path: '/care' },
-  { file: '08-paths.png', path: '/paths' },
-  { file: '09-plans.png', path: '/plans' },
-  { file: '10-recommendation.png', path: '/recommendation' },
-  { file: '11-assistance.png', path: '/assistance' },
-  { file: '12-contact.png', path: '/contact' },
-  { file: '13-confirmation.png', path: '/confirmation' },
-  { file: '14-agent-dashboard.png', path: '/agent' },
-  { file: '15-agent-case.png', path: '/agent/cases/CASE-100234' },
+  { file: '02-step1-location.png', path: '/location' },
+  { file: '03-step2-preferences.png', path: '/preferences' },
+  { file: '04-step3-paths.png', path: '/paths' },
+  { file: '05-step4-coverage-value.png', path: '/coverage-value' },
+  { file: '06-coverage-modal.png', path: '/coverage-value', modal: true },
+  { file: '07-contact.png', path: '/contact' },
+  { file: '08-confirmation.png', path: '/confirmation' },
+  { file: '09-agent-dashboard.png', path: '/agent' },
+  { file: '10-agent-case.png', path: '/agent/cases/CASE-100234' },
 ]
 
 await mkdir(outDir, { recursive: true })
@@ -87,6 +82,17 @@ await page.evaluateOnNewDocument((data) => {
 
 for (const item of pages) {
   await page.goto(base + item.path, { waitUntil: 'networkidle0', timeout: 20000 })
+
+  if (item.modal) {
+    await page.evaluate(() => {
+      const btn = [...document.querySelectorAll('button')].find((b) =>
+        b.textContent.includes('View Coverage & Benefits'),
+      )
+      btn?.click()
+    })
+    await new Promise((r) => setTimeout(r, 400))
+  }
+
   await page.screenshot({
     path: join(outDir, item.file),
     fullPage: Boolean(item.full) || true,

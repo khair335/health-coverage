@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom'
-import { Choice, Field, Notice, PageTitle, TextInput } from '../components/ui'
-import { StepProgress, NavRow } from '../components/StepProgress'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Choice, Field, Notice, TextInput } from '../components/ui'
+import { AssessmentShell } from '../components/FourStepProgress'
+import { NavRow } from '../components/StepProgress'
 import { incomeRanges } from '../data/mock'
 import { useAssessment } from '../context/AssessmentContext'
 import { useToast } from '../components/Toast'
@@ -8,6 +9,7 @@ import { useToast } from '../components/Toast'
 export default function Income() {
   const { data, update, annualIncome } = useAssessment()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const toast = useToast()
 
   const handleNext = () => {
@@ -16,17 +18,13 @@ export default function Income() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <StepProgress current="/income" />
-
-      <div className="rounded-3xl border border-indigo-100 bg-white p-6 sm:p-8 shadow-xl shadow-indigo-500/5">
-        <PageTitle
-          kicker="Step 3 · Financial Screening"
-          title="Income & Current Coverage"
-          subtitle="Rough estimates are completely fine. We screen for Medicaid thresholds ($1,800/mo) and ACA tax subsidies."
-        />
-
-        <div className="mt-6 space-y-6">
+    <AssessmentShell
+      step={1}
+      pathname={pathname}
+      title="Income & Current Coverage"
+      subtitle="Rough estimates are completely fine. We screen for Medicaid thresholds and ACA tax subsidies."
+    >
+      <div className="space-y-6">
           <div>
             <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-indigo-600">
               How would you like to state income?
@@ -141,10 +139,9 @@ export default function Income() {
               onChange={(e) => update({ coverageLoss: e.target.value })}
             />
           </Field>
-        </div>
-
-        <NavRow back="/household" onNext={handleNext} nextLabel="Continue to Eligibility" />
       </div>
-    </div>
+
+      <NavRow back="/household" onNext={handleNext} nextLabel="Continue to Eligibility →" />
+    </AssessmentShell>
   )
 }

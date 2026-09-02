@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom'
-import { Field, PageTitle, Select, TextInput } from '../components/ui'
-import { StepProgress, NavRow } from '../components/StepProgress'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Field, Select, TextInput } from '../components/ui'
+import { AssessmentShell } from '../components/FourStepProgress'
+import { NavRow } from '../components/StepProgress'
 import { relationships } from '../data/mock'
 import { useAssessment } from '../context/AssessmentContext'
 import { useToast } from '../components/Toast'
@@ -8,6 +9,7 @@ import { useToast } from '../components/Toast'
 export default function Household() {
   const { data, update, emptyMember } = useAssessment()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const toast = useToast()
 
   const setMember = (id, patch) => {
@@ -37,17 +39,13 @@ export default function Household() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <StepProgress current="/household" />
-
-      <div className="rounded-3xl border border-indigo-100 bg-white p-6 sm:p-8 shadow-xl shadow-indigo-500/5">
-        <PageTitle
-          kicker="Step 2 · Household Composition"
-          title="Who is in your household?"
-          subtitle="Household size and ages affect public-program eligibility (Medicaid/CHIP) and Marketplace premium subsidies."
-        />
-
-        <div className="mt-6 space-y-5">
+    <AssessmentShell
+      step={1}
+      pathname={pathname}
+      title="Who is in your household?"
+      subtitle="Household size and ages affect public-program eligibility and Marketplace premium subsidies."
+    >
+      <div className="space-y-5">
           {data.members.map((m, i) => (
             <div key={m.id} className="relative rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 transition-all duration-200 hover:border-indigo-200 hover:shadow-md">
               <div className="mb-4 flex items-center justify-between">
@@ -116,8 +114,7 @@ export default function Household() {
           </button>
         </div>
 
-        <NavRow back="/location" onNext={handleNext} nextLabel="Continue to Income" />
-      </div>
-    </div>
+      <NavRow back="/location" onNext={handleNext} nextLabel="Continue to Income →" />
+    </AssessmentShell>
   )
 }

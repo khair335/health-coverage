@@ -117,7 +117,7 @@ export function NavRow({ back, next, nextLabel = 'Continue', disabled, onNext })
             to={back}
             className="inline-flex min-h-11 items-center justify-center rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-[#4338ca] hover:bg-indigo-50 transition-colors duration-150 sm:min-h-12 sm:px-5 sm:py-3 sm:text-base"
           >
-            Back
+            ← Back
           </Link>
         ) : (
           <span />

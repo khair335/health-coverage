@@ -19,9 +19,9 @@ export default function Contact() {
   return (
     <div>
       <PageTitle
-        kicker="S12 · Agent handoff"
+        kicker="Talk to a Licensed Broker"
         title="Talk with a licensed producer"
-        subtitle="You are requesting help from a licensed producer (the platform owner in this MVP). Consent boxes are not pre-checked."
+        subtitle="Request help from a licensed producer. Consent boxes are not pre-checked."
       />
       <Notice>
         Recommended option on file:{' '}
@@ -93,7 +93,7 @@ export default function Contact() {
         </label>
       </div>
 
-      <NavRow back="/recommendation" disabled={!canSubmit} onNext={submit} nextLabel="Submit request" />
+      <NavRow back="/coverage-value" disabled={!canSubmit} onNext={submit} nextLabel="Submit request" />
     </div>
   )
 }
