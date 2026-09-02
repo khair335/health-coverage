@@ -156,16 +156,7 @@ export default function CoverageValue() {
         ))}
       </div>
 
-      <InfoBanner iconName="lightbulb" className="mt-6">
-        <p>These estimates are based on the healthcare usage you described. You can go back and adjust your answers anytime.</p>
-        <button
-          type="button"
-          onClick={() => navigate('/preferences')}
-          className="mt-2 font-semibold text-[#4338ca] hover:underline"
-        >
-          ← Back to Adjust Answers
-        </button>
-      </InfoBanner>
+     
 
       <NavRow back="/paths" onNext={() => navigate('/contact')} nextLabel="Talk to a Licensed Broker →" />
       </AssessmentShell>
