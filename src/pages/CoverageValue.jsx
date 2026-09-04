@@ -64,7 +64,8 @@ export default function CoverageValue() {
 
   const selectPlan = (id) => {
     update({ selectedPlanId: id === 'marketplace' ? 'PLAN-XYZ' : id })
-    navigate('/contact')
+    sessionStorage.setItem('hcn-contact-back', JSON.stringify({ backTo: '/coverage-value', fromInterest: false }))
+    navigate('/contact', { state: { backTo: '/coverage-value' } })
   }
 
   return (
@@ -158,7 +159,14 @@ export default function CoverageValue() {
 
      
 
-      <NavRow back="/paths" onNext={() => navigate('/contact')} nextLabel="Talk to a Licensed Broker →" />
+      <NavRow
+        back="/paths"
+        onNext={() => {
+          sessionStorage.setItem('hcn-contact-back', JSON.stringify({ backTo: '/coverage-value', fromInterest: false }))
+          navigate('/contact', { state: { backTo: '/coverage-value' } })
+        }}
+        nextLabel="Talk to a Licensed Broker →"
+      />
       </AssessmentShell>
 
       {modalPlan && <CoverageBenefitsModal planId={modalPlan} onClose={closeModal} />}

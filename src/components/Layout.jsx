@@ -120,6 +120,13 @@ export function Layout({ agent = false }) {
                 </Link>
                 <Link
                   to="/contact"
+                  state={{ backTo: '/', fromNav: true }}
+                  onClick={() =>
+                    sessionStorage.setItem(
+                      'hcn-contact-back',
+                      JSON.stringify({ backTo: '/', fromNav: true, fromInterest: false }),
+                    )
+                  }
                   className="ml-2 hidden items-center gap-1.5 rounded-xl border border-indigo-300 bg-white px-4 py-2 text-sm font-bold text-[#4338ca] hover:bg-indigo-50 lg:inline-flex"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -230,6 +237,14 @@ export function Layout({ agent = false }) {
                   </Link>
                   <Link
                     to="/contact"
+                    state={{ backTo: '/', fromNav: true }}
+                    onClick={() => {
+                      setMenuOpen(false)
+                      sessionStorage.setItem(
+                        'hcn-contact-back',
+                        JSON.stringify({ backTo: '/', fromNav: true, fromInterest: false }),
+                      )
+                    }}
                     className="rounded-xl border border-indigo-300 bg-white px-4 py-3 text-center font-bold text-[#4338ca] hover:bg-indigo-50"
                   >
                     Talk to a Licensed Broker

@@ -1,9 +1,19 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { HiAdjustmentsHorizontal, HiChevronLeft, HiChevronRight, HiEllipsisVertical, HiMagnifyingGlass, HiPlus, HiXMark } from 'react-icons/hi2'
+import {
+  HiAdjustmentsHorizontal,
+  HiChevronLeft,
+  HiChevronRight,
+  HiEllipsisVertical,
+  HiMagnifyingGlass,
+  HiPhone,
+  HiPlus,
+  HiXMark,
+} from 'react-icons/hi2'
 import { HiInformationCircle } from 'react-icons/hi'
 import { AddNewClientModal } from '../../components/AddNewClientModal'
 import { AppIcon } from '../../components/AppIcons'
+import { useToast } from '../../components/Toast'
 import { dashboardClients as initialClients, dashboardStats, statBg } from '../../data/mock'
 
 const toneMap = {
@@ -13,6 +23,17 @@ const toneMap = {
   violet: 'bg-purple-100 text-purple-700',
   rose: 'bg-rose-100 text-rose-700',
   slate: 'bg-slate-100 text-slate-700',
+}
+
+const statusToneMap = {
+  'New Lead': 'slate',
+  'Needs Help Choosing': 'amber',
+  Contacted: 'blue',
+  'Quote Sent': 'violet',
+  'Application In Progress': 'rose',
+  'Follow-Up': 'violet',
+  Enrolled: 'emerald',
+  'Application Submitted': 'emerald',
 }
 
 const priorityDot = {
@@ -51,8 +72,8 @@ const avatarPalette = [
   'bg-indigo-100 text-indigo-700',
 ]
 
-function makeClientId(n) {
-  return `CASE-100${n}`
+function todayLabel() {
+  return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function initialsFromName(name) {
@@ -60,7 +81,85 @@ function initialsFromName(name) {
   return `${parts[0]?.[0] || ''}${parts[1]?.[0] || ''}`.toUpperCase()
 }
 
+function RowActionsMenu({ client, open, onClose, onAction, menuRef }) {
+  if (!open) return null
+  return (
+    <div
+      ref={menuRef}
+      className="absolute right-0 top-full z-40 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+    >
+      <button
+        type="button"
+        className="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-indigo-50 hover:text-[#4338ca]"
+        onClick={() => onAction('manage')}
+      >
+        Manage client
+      </button>
+      <button
+        type="button"
+        className="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-indigo-50 hover:text-[#4338ca]"
+        onClick={() => onAction('call')}
+      >
+        Call {client.phone}
+      </button>
+      <button
+        type="button"
+        className="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-indigo-50 hover:text-[#4338ca]"
+        onClick={() => onAction('copyPhone')}
+      >
+        Copy phone number
+      </button>
+      <button
+        type="button"
+        className="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-indigo-50 hover:text-[#4338ca]"
+        onClick={() => onAction('schedule')}
+      >
+        Schedule follow-up
+      </button>
+      <div className="my-1 border-t border-slate-100" />
+      <p className="px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">Set status</p>
+      {STATUS_OPTIONS.slice(0, 6).map((status) => (
+        <button
+          key={status}
+          type="button"
+          className={`block w-full px-3 py-1.5 text-left text-xs hover:bg-indigo-50 ${
+            client.status === status ? 'font-bold text-[#4338ca]' : 'text-slate-600'
+          }`}
+          onClick={() => onAction('status', status)}
+        >
+          {status}
+        </button>
+      ))}
+      <div className="my-1 border-t border-slate-100" />
+      <p className="px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">Priority</p>
+      {PRIORITY_OPTIONS.map((priority) => (
+        <button
+          key={priority}
+          type="button"
+          className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs hover:bg-indigo-50 ${
+            client.priority === priority ? 'font-bold text-[#4338ca]' : 'text-slate-600'
+          }`}
+          onClick={() => onAction('priority', priority)}
+        >
+          <span className={`h-2 w-2 rounded-full ${priorityDot[priority]}`} />
+          {priority}
+        </button>
+      ))}
+      <div className="my-1 border-t border-slate-100" />
+      <button
+        type="button"
+        className="block w-full px-3 py-2 text-left text-sm text-rose-600 hover:bg-rose-50"
+        onClick={() => onAction('remove')}
+      >
+        Remove from list
+      </button>
+    </div>
+  )
+}
+
 export default function Dashboard() {
+  const navigate = useNavigate()
+  const toast = useToast()
   const [clients, setClients] = useState(initialClients)
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -68,21 +167,66 @@ export default function Dashboard() {
   const [addOpen, setAddOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [filters, setFilters] = useState(emptyFilters)
+  const [menuId, setMenuId] = useState(null)
   const filtersRef = useRef(null)
+  const tableRef = useRef(null)
+  const menuRef = useRef(null)
+
+  const statCounts = useMemo(() => {
+    const needsHelp = clients.filter((c) => c.status === 'Needs Help Choosing').length
+    const followUps = clients.filter((c) => c.nextFollowUp && c.nextFollowUp !== '—').length
+    const applications = clients.filter((c) =>
+      ['Application In Progress', 'Application Submitted', 'Quote Sent'].includes(c.status),
+    ).length
+    const enrolled = clients.filter((c) => c.status === 'Enrolled').length
+    return {
+      all: clients.length,
+      needsHelp,
+      followUps,
+      applications,
+      enrolled,
+    }
+  }, [clients])
+
+  const applyStatFilter = (filterKey) => {
+    setPage(1)
+    setQuery('')
+    if (filterKey === 'all') {
+      setFilters(emptyFilters)
+    } else if (filterKey === 'needsHelp') {
+      setFilters({ statuses: ['Needs Help Choosing'], priorities: [], followUpOnly: false })
+    } else if (filterKey === 'followUps') {
+      setFilters({ statuses: [], priorities: [], followUpOnly: true })
+    } else if (filterKey === 'applications') {
+      setFilters({
+        statuses: ['Application In Progress', 'Application Submitted', 'Quote Sent'],
+        priorities: [],
+        followUpOnly: false,
+      })
+    } else if (filterKey === 'enrolled') {
+      setFilters({ statuses: ['Enrolled'], priorities: [], followUpOnly: false })
+    }
+    requestAnimationFrame(() => {
+      tableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
 
   const activeFilterCount =
     filters.statuses.length + filters.priorities.length + (filters.followUpOnly ? 1 : 0)
 
   useEffect(() => {
-    if (!filtersOpen) return undefined
+    if (!filtersOpen && !menuId) return undefined
     const handleClick = (e) => {
-      if (filtersRef.current && !filtersRef.current.contains(e.target)) {
+      if (filtersOpen && filtersRef.current && !filtersRef.current.contains(e.target)) {
         setFiltersOpen(false)
+      }
+      if (menuId && menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuId(null)
       }
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
-  }, [filtersOpen])
+  }, [filtersOpen, menuId])
 
   const toggleStatus = (status) => {
     setFilters((prev) => ({
@@ -104,11 +248,98 @@ export default function Dashboard() {
 
   const clearFilters = () => setFilters(emptyFilters)
 
+  const updateClient = (id, patch) => {
+    setClients((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...patch, updated: todayLabel() } : c)),
+    )
+  }
+
+  const handleRowAction = (client, action, value) => {
+    setMenuId(null)
+    if (action === 'manage') {
+      navigate(`/agent/cases/${client.id}`)
+      return
+    }
+    if (action === 'call') {
+      window.location.href = `tel:${client.phone.replace(/\D/g, '')}`
+      toast.success(`Calling ${client.name}…`)
+      updateClient(client.id, {
+        lastContact: todayLabel(),
+        status: client.status === 'New Lead' ? 'Contacted' : client.status,
+        statusTone: client.status === 'New Lead' ? 'blue' : client.statusTone,
+      })
+      return
+    }
+    if (action === 'copyPhone') {
+      navigator.clipboard?.writeText(client.phone).then(
+        () => toast.success('Phone number copied'),
+        () => toast.error('Could not copy phone'),
+      )
+      return
+    }
+    if (action === 'schedule') {
+      const next = new Date()
+      next.setDate(next.getDate() + 2)
+      const nextLabel = next.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      updateClient(client.id, {
+        nextFollowUp: nextLabel,
+        nextFollowUpTime: '10:00 AM',
+        status: client.status === 'Enrolled' ? client.status : 'Follow-Up',
+        statusTone: client.status === 'Enrolled' ? client.statusTone : 'violet',
+      })
+      toast.success(`Follow-up set for ${client.name} · ${nextLabel}`)
+      return
+    }
+    if (action === 'status') {
+      updateClient(client.id, { status: value, statusTone: statusToneMap[value] || 'slate' })
+      toast.success(`${client.name} → ${value}`)
+      return
+    }
+    if (action === 'priority') {
+      updateClient(client.id, { priority: value })
+      toast.success(`${client.name} priority → ${value}`)
+      return
+    }
+    if (action === 'remove') {
+      setClients((prev) => prev.filter((c) => c.id !== client.id))
+      toast.success(`${client.name} removed from list`)
+    }
+  }
+
+  const handleAddClient = (form) => {
+    const id = `CASE-100${300 + clients.length}`
+    setClients((prev) => [
+      {
+        id,
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        initials: initialsFromName(form.name),
+        avatarBg: avatarPalette[prev.length % avatarPalette.length],
+        status: form.status,
+        statusTone: statusToneMap[form.status] || 'slate',
+        pathNeed: form.pathNeed.trim() || 'Coverage review',
+        pathPlan: form.pathPlan.trim() || 'To be determined',
+        pathIcon: 'sparkles',
+        lastContact: todayLabel(),
+        nextFollowUp: '—',
+        nextFollowUpTime: '',
+        priority: form.priority,
+        updated: todayLabel(),
+      },
+      ...prev,
+    ])
+    toast.success(`${form.name.trim()} added`)
+    setPage(1)
+    setFilters(emptyFilters)
+    setQuery('')
+  }
+
   const filtered = useMemo(
     () =>
       clients.filter((c) => {
         const matchesSearch =
           c.name.toLowerCase().includes(query.toLowerCase()) ||
+          c.phone.toLowerCase().includes(query.toLowerCase()) ||
           c.pathPlan.toLowerCase().includes(query.toLowerCase()) ||
           c.pathNeed.toLowerCase().includes(query.toLowerCase())
         const matchesStatus = filters.statuses.length === 0 || filters.statuses.includes(c.status)
@@ -148,46 +379,6 @@ export default function Dashboard() {
     for (let i = start; i <= end; i += 1) pages.push(i)
     return pages
   }, [safePage, totalPages])
-
-  const handleAddClient = (form) => {
-    const id = makeClientId(300 + clients.length)
-    const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    const tone =
-      form.status === 'New Lead'
-        ? 'slate'
-        : form.status === 'Needs Help Choosing'
-          ? 'amber'
-          : form.status === 'Contacted'
-            ? 'blue'
-            : form.status === 'Quote Sent'
-              ? 'violet'
-              : form.status === 'Application In Progress'
-                ? 'rose'
-                : form.status === 'Enrolled'
-                  ? 'emerald'
-                  : 'violet'
-
-    setClients((prev) => [
-      {
-        id,
-        name: form.name.trim(),
-        phone: form.phone.trim(),
-        initials: initialsFromName(form.name),
-        avatarBg: avatarPalette[prev.length % avatarPalette.length],
-        status: form.status,
-        statusTone: tone,
-        pathNeed: form.pathNeed.trim() || 'Coverage review',
-        pathPlan: form.pathPlan.trim() || 'To be determined',
-        pathIcon: 'sparkles',
-        lastContact: today,
-        nextFollowUp: '—',
-        nextFollowUpTime: '',
-        priority: form.priority,
-        updated: today,
-      },
-      ...prev,
-    ])
-  }
 
   return (
     <div>
@@ -355,27 +546,54 @@ export default function Dashboard() {
       )}
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {dashboardStats.map((s, i) => (
-          <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${statBg[s.color]}`}>
-                <AppIcon name={s.icon} className="h-5 w-5" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-slate-600">{s.label}</p>
-                <p className="text-2xl font-bold text-slate-900">{i === 0 ? clients.length : s.value}</p>
+        {dashboardStats.map((s) => {
+          const count = statCounts[s.filterKey] ?? s.value
+          const isActive =
+            (s.filterKey === 'all' && activeFilterCount === 0) ||
+            (s.filterKey === 'needsHelp' &&
+              filters.statuses.length === 1 &&
+              filters.statuses[0] === 'Needs Help Choosing') ||
+            (s.filterKey === 'followUps' && filters.followUpOnly) ||
+            (s.filterKey === 'applications' &&
+              filters.statuses.includes('Application In Progress') &&
+              !filters.followUpOnly) ||
+            (s.filterKey === 'enrolled' &&
+              filters.statuses.length === 1 &&
+              filters.statuses[0] === 'Enrolled')
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => applyStatFilter(s.filterKey)}
+              className={`rounded-xl border bg-white p-4 text-left shadow-sm transition hover:border-[#4338ca]/50 ${
+                isActive ? 'border-[#4338ca] ring-2 ring-indigo-100' : 'border-slate-200'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${statBg[s.color]}`}>
+                  <AppIcon name={s.icon} className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-slate-600">{s.label}</p>
+                  <p className="text-2xl font-bold text-slate-900">{count}</p>
+                </div>
               </div>
-            </div>
-            <button type="button" className="mt-3 text-xs font-semibold text-[#4338ca] hover:underline">
-              {i === 0 ? 'View all →' : 'View →'}
+              <span className="mt-3 inline-block text-xs font-semibold text-[#4338ca]">
+                {s.filterKey === 'all' ? 'View all →' : 'View →'}
+              </span>
             </button>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div ref={tableRef} className="scroll-mt-24 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="border-b border-slate-200 px-5 py-3.5">
-          <h2 className="font-bold text-slate-900">Client Overview</h2>
+          <h2 className="font-bold text-slate-900">
+            Client Overview
+            {activeFilterCount > 0 && (
+              <span className="ml-2 text-sm font-medium text-slate-500">({filtered.length} matching)</span>
+            )}
+          </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-[980px] w-full text-left text-sm">
@@ -408,15 +626,37 @@ export default function Dashboard() {
                           {c.initials}
                         </span>
                         <div>
-                          <p className="font-semibold text-slate-900">{c.name}</p>
-                          <p className="text-xs text-slate-500">{c.phone}</p>
+                          <Link
+                            to={`/agent/cases/${c.id}`}
+                            className="font-semibold text-slate-900 hover:text-[#4338ca] hover:underline"
+                          >
+                            {c.name}
+                          </Link>
+                          <a
+                            href={`tel:${c.phone.replace(/\D/g, '')}`}
+                            className="mt-0.5 flex items-center gap-1 text-xs text-slate-500 hover:text-[#4338ca]"
+                          >
+                            <HiPhone className="h-3 w-3" />
+                            {c.phone}
+                          </a>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${toneMap[c.statusTone]}`}>
-                        {c.status}
-                      </span>
+                      <select
+                        value={c.status}
+                        onChange={(e) =>
+                          handleRowAction(c, 'status', e.target.value)
+                        }
+                        className={`rounded-full border-0 px-2.5 py-1 text-xs font-semibold focus:ring-2 focus:ring-indigo-200 ${toneMap[c.statusTone]}`}
+                        aria-label={`Status for ${c.name}`}
+                      >
+                        {STATUS_OPTIONS.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td className="px-4 py-3.5">
                       <div className="flex items-start gap-2">
@@ -435,14 +675,22 @@ export default function Dashboard() {
                       {c.nextFollowUpTime && <p className="text-xs text-slate-500">{c.nextFollowUpTime}</p>}
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-                        <span className={`h-2 w-2 rounded-full ${priorityDot[c.priority]}`} />
-                        {c.priority}
-                      </span>
+                      <select
+                        value={c.priority}
+                        onChange={(e) => handleRowAction(c, 'priority', e.target.value)}
+                        className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 focus:border-[#4338ca] focus:outline-none"
+                        aria-label={`Priority for ${c.name}`}
+                      >
+                        {PRIORITY_OPTIONS.map((p) => (
+                          <option key={p} value={p}>
+                            {p}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td className="px-4 py-3.5 text-xs text-slate-500">{c.updated}</td>
                     <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
+                      <div className="relative flex items-center gap-2">
                         <Link
                           to={`/agent/cases/${c.id}`}
                           className="whitespace-nowrap rounded-lg border border-[#4338ca] px-3 py-1.5 text-xs font-semibold text-[#4338ca] hover:bg-indigo-50"
@@ -451,11 +699,27 @@ export default function Dashboard() {
                         </Link>
                         <button
                           type="button"
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                          aria-label="More actions"
+                          className={`rounded-lg p-1.5 hover:bg-slate-100 ${
+                            menuId === c.id ? 'bg-slate-100 text-slate-700' : 'text-slate-400 hover:text-slate-600'
+                          }`}
+                          aria-label={`More actions for ${c.name}`}
+                          aria-expanded={menuId === c.id}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setMenuId((id) => (id === c.id ? null : c.id))
+                          }}
                         >
                           <HiEllipsisVertical className="h-4 w-4" />
                         </button>
+                        {menuId === c.id && (
+                          <RowActionsMenu
+                            client={c}
+                            open
+                            menuRef={menuRef}
+                            onClose={() => setMenuId(null)}
+                            onAction={(action, value) => handleRowAction(c, action, value)}
+                          />
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -515,7 +779,8 @@ export default function Dashboard() {
       <div className="mt-4 flex items-start gap-2 rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-slate-700">
         <HiInformationCircle className="mt-0.5 h-5 w-5 shrink-0 text-sky-500" />
         <p>
-          Click <strong>Manage Client</strong> to view details, update information, add notes, and take action.
+          Use <strong>Manage Client</strong> for the full record, or the <strong>⋮</strong> menu to call, schedule
+          follow-ups, change status/priority, or remove a client.
         </p>
       </div>
 

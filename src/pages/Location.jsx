@@ -17,7 +17,8 @@ export default function Location() {
 
   const handleNext = () => {
     if (!supported) {
-      navigate('/contact')
+      sessionStorage.setItem('hcn-contact-back', JSON.stringify({ backTo: '/location', fromInterest: true }))
+      navigate('/contact', { state: { backTo: '/location', fromInterest: true } })
       return
     }
     if (data.zip.length !== 5) {

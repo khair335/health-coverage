@@ -1,7 +1,31 @@
 export const languages = [
   { code: 'en', label: 'English' },
-  { code: 'ht', label: 'Kreyòl Ayisyen' },
+  { code: 'es', label: 'Spanish (Español)' },
+  { code: 'ht', label: 'Haitian Creole (Kreyòl Ayisyen)' },
+  { code: 'pt', label: 'Portuguese (Português)' },
+  { code: 'fr', label: 'French (Français)' },
+  { code: 'zh', label: 'Chinese (中文)' },
+  { code: 'ar', label: 'Arabic (العربية)' },
+  { code: 'ko', label: 'Korean (한국어)' },
+  { code: 'tl', label: 'Tagalog / Filipino' },
+  { code: 'hi', label: 'Hindi (हिन्दी)' },
+  { code: 'pl', label: 'Polish (Polski)' },
+  { code: 'ru', label: 'Russian (Русский)' },
+  { code: 'vi', label: 'Vietnamese (Tiếng Việt)' },
+  { code: 'gu', label: 'Gujarati (ગુજરાતી)' },
+  { code: 'other', label: 'Other / Prefer not to say' },
 ]
+
+export const licensedBroker = {
+  name: 'Jean Marc Dube',
+  title: 'Licensed Insurance Broker',
+  license: 'NJ Producer License #NJ-482910',
+  phone: '(732) 555-0140',
+  phoneDisplay: '(732) 555-0140',
+  email: 'jean.marc@healthcoveragenavigator.com',
+  hours: 'Mon–Fri · 9:00 AM – 6:00 PM ET',
+  office: 'New Jersey · Serving NJ households',
+}
 
 export const states = [
   { code: 'NJ', name: 'New Jersey', supported: true },
@@ -507,11 +531,11 @@ export const coveragePlanDetails = {
 }
 
 export const dashboardStats = [
-  { label: 'Total Clients', value: 32, color: 'indigo', icon: 'users' },
-  { label: 'Needs Help Choosing', value: 6, color: 'amber', icon: 'handHeart' },
-  { label: 'Follow-Ups Due', value: 9, color: 'orange', icon: 'calendar' },
-  { label: 'Applications', value: 7, color: 'violet', icon: 'document' },
-  { label: 'Enrolled / Policies', value: 5, color: 'emerald', icon: 'shieldCheck' },
+  { id: 'all', label: 'Total Clients', value: 32, color: 'indigo', icon: 'users', filterKey: 'all' },
+  { id: 'needs-help', label: 'Needs Help Choosing', value: 6, color: 'amber', icon: 'handHeart', filterKey: 'needsHelp' },
+  { id: 'follow-ups', label: 'Follow-Ups Due', value: 9, color: 'orange', icon: 'calendar', filterKey: 'followUps' },
+  { id: 'applications', label: 'Applications', value: 7, color: 'violet', icon: 'document', filterKey: 'applications' },
+  { id: 'enrolled', label: 'Enrolled / Policies', value: 5, color: 'emerald', icon: 'shieldCheck', filterKey: 'enrolled' },
 ]
 
 const statBg = {

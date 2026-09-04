@@ -175,14 +175,14 @@ export function Choice({ selected, children, onClick }) {
   )
 }
 
-export function Notice({ children, tone = 'info' }) {
+export function Notice({ children, tone = 'info', className = '' }) {
   const map = {
     info: 'bg-indigo-50 text-[#4338ca] border-indigo-200',
     warn: 'bg-amber-50 text-amber-950 border-amber-200',
     alert: 'bg-red-50 text-red-900 border-red-200',
   }
   return (
-    <div className={`rounded-xl border px-3.5 py-2.5 text-xs leading-relaxed sm:px-4 sm:py-3 sm:text-sm ${map[tone]}`}>
+    <div className={`rounded-xl border px-3.5 py-2.5 text-xs leading-relaxed sm:px-4 sm:py-3 sm:text-sm ${map[tone]} ${className}`}>
       {children}
     </div>
   )
